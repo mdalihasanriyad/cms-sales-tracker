@@ -48,7 +48,7 @@ const Dashboard = () => {
               <span className="text-primary-foreground font-bold text-sm font-display">CS</span>
             </div>
             <span className="text-sm text-muted-foreground">
-              © 2025 CMS Sales. All rights reserved.
+              © 2026 CMS Sales. All rights reserved.
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
