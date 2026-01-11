@@ -64,7 +64,7 @@ const Index = () => {
               <ArrowRight className="h-5 w-5" />
             </Button>
             <Button variant="outline" size="xl" onClick={() => navigate('/dashboard')} className="w-full sm:w-auto">
-              View Demo Dashboard
+              View Dashboard
             </Button>
           </div>
         </div>
