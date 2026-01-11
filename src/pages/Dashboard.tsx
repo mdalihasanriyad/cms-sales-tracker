@@ -45,7 +45,7 @@ const Dashboard = () => {
         <div className="container py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-lg gradient-bg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm font-display">CS</span>
+              <span className="text-primary-foreground font-bold text-sm font-display">CMS</span>
             </div>
             <span className="text-sm text-muted-foreground">
               © 2026 CMS Sales. All rights reserved.
