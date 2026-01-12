@@ -1,22 +1,52 @@
+import { useAuth } from '@/contexts/AuthContext';
+import { useDashboardStats } from '@/hooks/useDashboardStats';
+import { useLeaderboard } from '@/hooks/useLeaderboard';
+import { useSales } from '@/hooks/useSales';
+import { useChartData } from '@/hooks/useChartData';
 import Header from '@/components/layout/Header';
 import HeroSection from '@/components/dashboard/HeroSection';
 import StatsCards from '@/components/dashboard/StatsCards';
 import TargetProgress from '@/components/dashboard/TargetProgress';
 import SalesCharts from '@/components/dashboard/SalesCharts';
-import Leaderboard from '@/components/dashboard/Leaderboard';
-import SalesTable from '@/components/dashboard/SalesTable';
-import { currentUser, leaderboard, mockSales, getDashboardStats, chartData } from '@/data/mockData';
+import LeaderboardComponent from '@/components/dashboard/LeaderboardComponent';
+import SalesTableComponent from '@/components/dashboard/SalesTableComponent';
+import { Loader2 } from 'lucide-react';
 
 const Dashboard = () => {
-  const stats = getDashboardStats(currentUser.id);
+  const { user, profile, isLoading: authLoading } = useAuth();
+  const { stats, isLoading: statsLoading } = useDashboardStats();
+  const { leaderboard, isLoading: leaderboardLoading } = useLeaderboard();
+  const { sales, isLoading: salesLoading, addSale, deleteSale } = useSales();
+  const { chartData, isLoading: chartLoading } = useChartData();
+
+  const isLoading = authLoading || statsLoading || leaderboardLoading || salesLoading || chartLoading;
+
+  if (isLoading || !user || !profile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleAddSale = (sale: { amount: number; client_name: string; month_year: string }) => {
+    addSale.mutate(sale);
+  };
+
+  const handleDeleteSale = (id: string) => {
+    deleteSale.mutate(id);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
-      <Header user={currentUser} />
+      <Header />
       
       <main className="container py-8 space-y-8">
         {/* Hero Section */}
-        <HeroSection user={currentUser} />
+        <HeroSection userName={profile.full_name || profile.email.split('@')[0]} />
 
         {/* Stats Cards */}
         <StatsCards stats={stats} />
@@ -29,13 +59,17 @@ const Dashboard = () => {
               dailyData={chartData.daily} 
               monthlyData={chartData.monthly} 
             />
-            <SalesTable sales={mockSales} />
+            <SalesTableComponent 
+              sales={sales}
+              onAddSale={handleAddSale}
+              onDeleteSale={handleDeleteSale}
+            />
           </div>
 
           {/* Right Column - Target & Leaderboard */}
           <div className="space-y-8">
             <TargetProgress stats={stats} />
-            <Leaderboard entries={leaderboard} currentUserId={currentUser.id} />
+            <LeaderboardComponent entries={leaderboard} currentUserId={user.id} />
           </div>
         </div>
       </main>
