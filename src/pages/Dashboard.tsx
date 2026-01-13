@@ -46,7 +46,7 @@ const Dashboard = () => {
       
       <main className="container py-8 space-y-8">
         {/* Hero Section */}
-        <HeroSection userName={profile.full_name || profile.email.split('@')[0]} />
+        <HeroSection />
 
         {/* Stats Cards */}
         <StatsCards stats={stats} />

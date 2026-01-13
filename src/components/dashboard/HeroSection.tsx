@@ -1,12 +1,13 @@
 import { Calendar, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { User } from '@/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface HeroSectionProps {
-  user: User;
+  userName?: string;
 }
 
-const HeroSection = ({ user }: HeroSectionProps) => {
+const HeroSection = ({ userName }: HeroSectionProps) => {
+  const { profile, isAdmin } = useAuth();
   const currentDate = new Date();
   const monthYear = currentDate.toLocaleDateString('en-US', {
     month: 'long',
@@ -19,6 +20,9 @@ const HeroSection = ({ user }: HeroSectionProps) => {
     if (hour < 17) return 'Good afternoon';
     return 'Good evening';
   };
+
+  const displayName = userName || profile?.full_name?.split(' ')[0] || profile?.email?.split('@')[0] || 'User';
+  const role = isAdmin ? 'admin' : 'user';
 
   return (
     <div className="relative overflow-hidden rounded-2xl gradient-bg p-8 md:p-12 animate-fade-in">
@@ -37,11 +41,11 @@ const HeroSection = ({ user }: HeroSectionProps) => {
                 {monthYear}
               </Badge>
               <Badge variant="secondary" className="bg-white/20 text-white border-0 backdrop-blur-sm capitalize">
-                {user.role}
+                {role}
               </Badge>
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white font-display">
-              {getGreeting()}, {user.name.split(' ')[0]}!
+              {getGreeting()}, {displayName}!
             </h1>
             <p className="text-lg text-white/80 max-w-xl">
               Track your sales performance, hit your targets, and climb the leaderboard.
