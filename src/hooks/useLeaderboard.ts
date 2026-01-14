@@ -7,11 +7,8 @@ interface LeaderboardEntry {
   rank: number;
   userId: string;
   name: string;
-  email: string;
   avatarUrl: string | null;
   totalSales: number;
-  monthlyTarget: number;
-  targetPercentage: number;
 }
 
 export const useLeaderboard = () => {
@@ -21,9 +18,9 @@ export const useLeaderboard = () => {
   const { data: leaderboard = [], isLoading } = useQuery({
     queryKey: ['leaderboard', currentMonthYear],
     queryFn: async () => {
-      // Get all active profiles
+      // Get all active profiles from the public view (excludes sensitive data)
       const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
+        .from('profiles_public')
         .select('*')
         .eq('is_active', true);
 
@@ -45,20 +42,16 @@ export const useLeaderboard = () => {
 
       // Build leaderboard
       const entries: LeaderboardEntry[] = profiles
+        .filter((profile) => profile.id !== null)
         .map((profile) => {
-          const totalSales = salesByUser[profile.id] || 0;
-          const monthlyTarget = Number(profile.monthly_target) || 50000;
-          const targetPercentage = monthlyTarget > 0 ? (totalSales / monthlyTarget) * 100 : 0;
+          const totalSales = salesByUser[profile.id!] || 0;
 
           return {
             rank: 0,
-            userId: profile.id,
-            name: profile.full_name || profile.email.split('@')[0],
-            email: profile.email,
+            userId: profile.id!,
+            name: profile.full_name || 'Unknown User',
             avatarUrl: profile.avatar_url,
             totalSales,
-            monthlyTarget,
-            targetPercentage,
           };
         })
         .sort((a, b) => b.totalSales - a.totalSales)
