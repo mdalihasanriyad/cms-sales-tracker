@@ -130,7 +130,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          avatar_url: string | null
+          full_name: string | null
+          id: string | null
+          is_active: boolean | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id?: string | null
+          is_active?: boolean | null
+        }
+        Update: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id?: string | null
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
