@@ -7,11 +7,8 @@ interface LeaderboardEntry {
   rank: number;
   userId: string;
   name: string;
-  email: string;
   avatarUrl: string | null;
   totalSales: number;
-  monthlyTarget: number;
-  targetPercentage: number;
 }
 
 interface LeaderboardProps {
@@ -112,11 +109,6 @@ const LeaderboardComponent = ({ entries, currentUserId }: LeaderboardProps) => {
                 <p className="text-sm text-muted-foreground">
                   {formatCurrency(entry.totalSales)}
                 </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-sm font-medium">{entry.targetPercentage.toFixed(0)}%</p>
-                <p className="text-xs text-muted-foreground">of target</p>
               </div>
             </div>
           );
