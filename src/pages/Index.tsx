@@ -12,8 +12,10 @@ const Index = () => {
     { label: 'Targets Hit', value: '95%', icon: Target },
     { label: 'Top Performers', value: '25', icon: Trophy },
   ];
-
+const currentYear = new Date().getFullYear();
   return (
+
+    
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -135,14 +137,16 @@ const Index = () => {
       {/* Footer */}
       <footer className="relative z-10 border-t mt-20">
         <div className="container py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 justify-between">
             <div className="h-8 w-8 rounded-lg gradient-bg flex items-center justify-center">
               <Sparkles className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="text-sm text-muted-foreground">
-              © 2025 CMS Sales. All rights reserved.
+              © {currentYear} CMS Sales. All rights reserved.
             </span>
+            
           </div>
+          <span className='text-sm text-muted-foreground'>Develop by <a className='text-sm gradient-text text-muted-foreground text-center animate-fade-in' href="https://ahriyad.top">AH Riyad</a></span>
           <p className="text-sm text-muted-foreground">
             Built for Fiverr sales teams
           </p>
