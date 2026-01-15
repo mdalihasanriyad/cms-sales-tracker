@@ -10,7 +10,6 @@ import TargetProgress from '@/components/dashboard/TargetProgress';
 import SalesCharts from '@/components/dashboard/SalesCharts';
 import LeaderboardComponent from '@/components/dashboard/LeaderboardComponent';
 import SalesTableComponent from '@/components/dashboard/SalesTableComponent';
-import { Loader2 } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, profile, isLoading: authLoading } = useAuth();
