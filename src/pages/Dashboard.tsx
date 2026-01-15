@@ -23,12 +23,20 @@ const Dashboard = () => {
 
   if (isLoading || !user || !profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading dashboard...</p>
-        </div>
-      </div>
+      <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 flex items-center justify-center">
+  <div className="flex flex-col items-center gap-6">
+    {/* Fancy spinning loader */}
+    <div className="relative w-16 h-16">
+      <div className="absolute inset-0 rounded-full border-4 border-t-4 border-t-blue-500 border-gray-300 animate-spin"></div>
+      <div className="absolute inset-0 rounded-full border-4 border-b-4 border-b-purple-500 border-gray-300 animate-spin-slow"></div>
+    </div>
+
+    {/* Loading text with gradient */}
+    <p className="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse">
+      Loading dashboard...
+    </p>
+  </div>
+</div>
     );
   }
 
@@ -79,7 +87,7 @@ const Dashboard = () => {
         <div className="container py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-lg gradient-bg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm font-display">CMS</span>
+              <span className="text-primary-foreground font-bold text-sm font-display">CMS </span>
             </div>
             <span className="text-sm text-muted-foreground">
               © 2026 CMS Sales. All rights reserved.
