@@ -18,11 +18,9 @@ export const useLeaderboard = () => {
   const { data: leaderboard = [], isLoading } = useQuery({
     queryKey: ['leaderboard', currentMonthYear],
     queryFn: async () => {
-      // Get all active profiles from the public view (excludes sensitive data)
+      // Get all active profiles using security definer function (excludes sensitive data like email)
       const { data: profiles, error: profilesError } = await supabase
-        .from('profiles_public')
-        .select('*')
-        .eq('is_active', true);
+        .rpc('get_public_profiles');
 
       if (profilesError) throw profilesError;
 
