@@ -46,7 +46,7 @@ const Header = () => {
             <div className="h-10 w-10 rounded-xl gradient-bg flex items-center justify-center animate-pulse-glow">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-display font-bold text-xl gradient-text"><a href="/">CMS Sales</a></span>
+            <span className="font-display font-bold text-xl gradient-text">CMS Sales</span>
           </Link>
           <Button onClick={() => navigate('/login')} className="gradient-bg">
             Sign In
@@ -64,7 +64,7 @@ const Header = () => {
           <div className="h-10 w-10 rounded-xl gradient-bg flex items-center justify-center animate-pulse-glow">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-display font-bold text-xl gradient-text hidden sm:block"><a href="/">CMS Sales</a></span>
+          <span className="font-display font-bold text-xl gradient-text hidden sm:block">CMS Sales</span>
         </Link>
 
         {/* Desktop Navigation */}
