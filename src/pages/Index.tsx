@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, TrendingUp, Target, Trophy, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,12 +27,12 @@ const currentYear = new Date().getFullYear();
       {/* Header */}
       <header className="relative z-10 container py-6">
         <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl gradient-bg flex items-center justify-center animate-pulse-glow">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="font-display text-xl font-bold gradient-text">CMS Sales</span>
-          </div>
+          </Link>
           <Button variant="hero" onClick={() => navigate('/login')} className="gap-2">
             Get Started
             <ArrowRight className="h-4 w-4" />
