@@ -16,6 +16,17 @@ interface Profile {
   updated_at: string;
 }
 
+interface RateLimitInfo {
+  retryAfter?: number;
+  attemptsRemaining?: number;
+  attemptsCount?: number;
+}
+
+interface AuthResult {
+  error: Error | null;
+  rateLimitInfo?: RateLimitInfo | null;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -24,8 +35,8 @@ interface AuthContextType {
   isAdmin: boolean;
   isLoading: boolean;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
-  signInWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUpWithEmail: (email: string, password: string, fullName?: string) => Promise<{ error: Error | null }>;
+  signInWithEmail: (email: string, password: string) => Promise<AuthResult>;
+  signUpWithEmail: (email: string, password: string, fullName?: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -137,29 +148,75 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke('rate-limited-auth', {
+        body: { email, password, action: 'signin' }
+      });
 
-    return { error };
+      if (invokeError) {
+        return { error: invokeError, rateLimitInfo: null };
+      }
+
+      if (data.error) {
+        const rateLimitInfo = {
+          retryAfter: data.retryAfter,
+          attemptsRemaining: data.attemptsRemaining,
+          attemptsCount: data.attemptsCount
+        };
+        return { 
+          error: new Error(data.error), 
+          rateLimitInfo: data.retryAfter ? rateLimitInfo : null 
+        };
+      }
+
+      // Set the session from the edge function response
+      if (data.session) {
+        await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token
+        });
+      }
+
+      return { error: null, rateLimitInfo: null };
+    } catch (err: any) {
+      return { error: new Error(err.message || 'An unexpected error occurred'), rateLimitInfo: null };
+    }
   };
 
   const signUpWithEmail = async (email: string, password: string, fullName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName,
-        },
-      },
-    });
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke('rate-limited-auth', {
+        body: { email, password, action: 'signup', fullName }
+      });
 
-    return { error };
+      if (invokeError) {
+        return { error: invokeError, rateLimitInfo: null };
+      }
+
+      if (data.error) {
+        const rateLimitInfo = {
+          retryAfter: data.retryAfter,
+          attemptsRemaining: data.attemptsRemaining,
+          attemptsCount: data.attemptsCount
+        };
+        return { 
+          error: new Error(data.error), 
+          rateLimitInfo: data.retryAfter ? rateLimitInfo : null 
+        };
+      }
+
+      // Set the session from the edge function response
+      if (data.session) {
+        await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token
+        });
+      }
+
+      return { error: null, rateLimitInfo: null };
+    } catch (err: any) {
+      return { error: new Error(err.message || 'An unexpected error occurred'), rateLimitInfo: null };
+    }
   };
 
   const signOut = async () => {
