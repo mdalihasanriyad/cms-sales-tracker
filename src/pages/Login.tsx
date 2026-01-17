@@ -45,9 +45,16 @@ const Login = () => {
     }
     setIsLoading(true);
     try {
-      const { error } = await signInWithEmail(email, password);
-      if (error) {
-        toast.error(error.message || 'Failed to sign in');
+      const result = await signInWithEmail(email, password);
+      if (result.error) {
+        if (result.rateLimitInfo?.retryAfter) {
+          const minutes = Math.ceil(result.rateLimitInfo.retryAfter / 60);
+          toast.error(`Too many login attempts. Please try again in ${minutes} minute${minutes !== 1 ? 's' : ''}.`);
+        } else if (result.rateLimitInfo?.attemptsRemaining !== undefined) {
+          toast.error(`${result.error.message}. ${result.rateLimitInfo.attemptsRemaining} attempts remaining.`);
+        } else {
+          toast.error(result.error.message || 'Failed to sign in');
+        }
       } else {
         toast.success('Welcome back!');
         navigate('/dashboard');
@@ -71,12 +78,15 @@ const Login = () => {
     }
     setIsLoading(true);
     try {
-      const { error } = await signUpWithEmail(email, password, fullName);
-      if (error) {
-        if (error.message.includes('already registered')) {
+      const result = await signUpWithEmail(email, password, fullName);
+      if (result.error) {
+        if (result.rateLimitInfo?.retryAfter) {
+          const minutes = Math.ceil(result.rateLimitInfo.retryAfter / 60);
+          toast.error(`Too many attempts. Please try again in ${minutes} minute${minutes !== 1 ? 's' : ''}.`);
+        } else if (result.error.message.includes('already registered')) {
           toast.error('This email is already registered. Please sign in instead.');
         } else {
-          toast.error(error.message || 'Failed to sign up');
+          toast.error(result.error.message || 'Failed to sign up');
         }
       } else {
         toast.success('Account created! Welcome to CMS Sales.');

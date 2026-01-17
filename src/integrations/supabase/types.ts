@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      login_attempts: {
+        Row: {
+          attempted_at: string
+          email: string | null
+          id: string
+          ip_address: string
+          success: boolean
+        }
+        Insert: {
+          attempted_at?: string
+          email?: string | null
+          id?: string
+          ip_address: string
+          success?: boolean
+        }
+        Update: {
+          attempted_at?: string
+          email?: string | null
+          id?: string
+          ip_address?: string
+          success?: boolean
+        }
+        Relationships: []
+      }
       monthly_meta: {
         Row: {
           created_at: string | null
@@ -133,6 +157,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          p_email?: string
+          p_ip_address: string
+          p_max_attempts?: number
+          p_window_minutes?: number
+        }
+        Returns: {
+          attempts_count: number
+          is_blocked: boolean
+          retry_after_seconds: number
+        }[]
+      }
+      clear_login_attempts: {
+        Args: { p_email: string; p_ip_address: string }
+        Returns: undefined
+      }
       get_public_profiles: {
         Args: never
         Returns: {
@@ -148,6 +189,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      record_login_attempt: {
+        Args: { p_email: string; p_ip_address: string; p_success: boolean }
+        Returns: undefined
       }
     }
     Enums: {

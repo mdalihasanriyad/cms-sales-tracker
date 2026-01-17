@@ -1,1 +1,4 @@
 project_id = "ywohulvdesfpvghahsko"
+
+[functions.rate-limited-auth]
+verify_jwt = false
