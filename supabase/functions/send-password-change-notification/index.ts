@@ -47,7 +47,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     const emailResponse = await resend.emails.send({
-      from: "CMS Sales <onboarding@resend.dev>",
+      from: "CMS Sales <no-reply@cms.ahriyad.top>",
       to: [email],
       subject: "Your password has been changed",
       html: `
