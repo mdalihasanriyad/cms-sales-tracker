@@ -57,6 +57,9 @@ const ResetPassword = () => {
 
     setIsLoading(true);
     try {
+      // Get current user info before updating password
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const { error } = await supabase.auth.updateUser({
         password: password,
       });
@@ -66,6 +69,23 @@ const ResetPassword = () => {
       } else {
         setIsSuccess(true);
         toast.success('Password updated successfully!');
+        
+        // Send email notification (fire and forget - don't block the flow)
+        if (user?.email) {
+          supabase.functions.invoke('send-password-change-notification', {
+            body: {
+              email: user.email,
+              userName: user.user_metadata?.full_name || user.user_metadata?.name || undefined,
+            },
+          }).then(({ error: emailError }) => {
+            if (emailError) {
+              console.error('Failed to send password change notification:', emailError);
+            } else {
+              console.log('Password change notification sent successfully');
+            }
+          });
+        }
+        
         // Redirect to dashboard after 2 seconds
         setTimeout(() => {
           navigate('/dashboard');

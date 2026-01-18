@@ -2,3 +2,6 @@ project_id = "ywohulvdesfpvghahsko"
 
 [functions.rate-limited-auth]
 verify_jwt = false
+
+[functions.send-password-change-notification]
+verify_jwt = false
